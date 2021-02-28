@@ -34,6 +34,7 @@ pub fn pipe() -> Result<(File, File)> {
 pub unsafe fn fork() -> Result<Option<u32>> {
     let pid = check_err(libc::fork())?;
     if pid == 0 {
+        check_err(libc::setpgid(std::process::id() as i32, std::process::id() as i32))?;
         Ok(None) // child
     } else {
         Ok(Some(pid as u32)) // parent
